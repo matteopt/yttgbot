@@ -2,6 +2,7 @@ import os
 import yaml
 import shutil
 import random
+import logging
 from glob import glob
 from uuid import uuid4
 from telegram import Update, MessageEntity
@@ -39,6 +40,7 @@ class Config:
 class Bot:
 
     def __init__(self, token: str, config: Config):
+        self.log = logging.getLogger(__name__)
         self.config = config
         self.app = Application.builder().token(token).build()
 
@@ -84,14 +86,17 @@ class Bot:
         self.app.run_polling(allowed_updates=Update.ALL_TYPES)
 
     async def download_chat(self, update: Update, context: CallbackContext):
+        self.log.debug(update.message.text)
         if update.message.chat.id in self.config.chats:
             await self.download(update, update.message)
 
     async def download_group(self, update: Update, context: CallbackContext):
+        self.log.debug(update.message.text)
         if update.message.chat.id in self.config.groups and self.mentioned(update):
             await self.download(update, update.message)
 
     async def download_group_reply(self, update: Update, context: CallbackContext):
+        self.log.debug(update.message.text)
         if update.message.chat.id in self.config.groups and self.mentioned(update):
             await self.download(update, update.message.reply_to_message)
 
