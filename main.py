@@ -145,6 +145,7 @@ class Bot:
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
     token = os.environ["TOKEN"]
     with open("config.yaml", "r") as f:
         config = Config(yaml.load(f, yaml.Loader))
